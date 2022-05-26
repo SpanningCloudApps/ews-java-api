@@ -126,14 +126,12 @@ public abstract class SyncResponse<TServiceObject extends ServiceObject,
             reader.ensureCurrentNodeIsStartElement();
 
             if (change.getChangeType().equals(ChangeType.Delete)
-                || change.getChangeType().equals(
-                ChangeType.ReadFlagChange)) {
+                || change.getChangeType().equals(ChangeType.ReadFlagChange)) {
               change.setId(change.createId());
               change.getId().loadFromXml(reader,
                   change.getId().getXmlElementName());
 
-              if (change.getChangeType().equals(
-                  ChangeType.ReadFlagChange)) {
+              if (change.getChangeType().equals(ChangeType.ReadFlagChange)) {
                 reader.read();
                 reader.ensureCurrentNodeIsStartElement();
                 ItemChange itemChange = null;
@@ -152,8 +150,7 @@ public abstract class SyncResponse<TServiceObject extends ServiceObject,
 
               change.setServiceObject(EwsUtilities
                   .createEwsObjectFromXmlElementName(null,
-                      reader.getService(), reader
-                          .getLocalName()));
+                      reader.getService(), reader.getLocalName()));
 
               change.getServiceObject().loadFromXml(reader,
                   true, /* clearPropertyBag */

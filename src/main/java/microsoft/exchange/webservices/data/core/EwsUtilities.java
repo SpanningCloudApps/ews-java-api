@@ -410,8 +410,7 @@ public final class EwsUtilities {
    * @throws Exception the exception
    */
   @SuppressWarnings("unchecked")
-  public static <TServiceObject extends ServiceObject>
-  TServiceObject createEwsObjectFromXmlElementName(
+  public static <TServiceObject extends ServiceObject> TServiceObject createEwsObjectFromXmlElementName(
       Class<?> itemClass, ExchangeService service, String xmlElementName)
       throws Exception {
     final ServiceObjectInfo member = EwsUtilities.SERVICE_OBJECT_INFO.getMember();
@@ -428,10 +427,20 @@ public final class EwsUtilities {
         return (TServiceObject) creationDelegate
             .createServiceObjectWithServiceParam(service);
       } else {
-        throw new IllegalArgumentException("No appropriate constructor could be found for this item class.");
+        throw new IllegalArgumentException(
+          "No appropriate constructor could be found for " + xmlElementName + " item class.");
       }
     }
 
+    if (itemClass == null) {
+      final StringBuilder keys = new StringBuilder();
+      for (String key: map.keySet()) {
+        keys.append(key).append(", ");
+      }
+
+      throw new IllegalStateException("No getXmlElementNameToServiceObjectClassMap found for " + xmlElementName
+        + " in " + keys );
+    }
     return (TServiceObject) itemClass.newInstance();
   }
 
@@ -883,9 +892,9 @@ public final class EwsUtilities {
     }
 
     Period period = Period.parse(xsDuration, ISOPeriodFormat.standard());
-      
+
     long retval = period.toStandardDuration().getMillis();
-    
+
     if (negative) {
       retval = -retval;
     }
