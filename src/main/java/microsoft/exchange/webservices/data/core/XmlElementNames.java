@@ -63,6 +63,12 @@ public class XmlElementNames {
    */
   public static final String FolderIds = "FolderIds";
 
+
+  /**
+   * The Constant Booking.
+   */
+  public static final String Booking = "Booking";
+
   /**
    * The Constant OccurrenceItemId.
    */
