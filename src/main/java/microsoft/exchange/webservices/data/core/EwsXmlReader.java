@@ -210,6 +210,11 @@ public class EwsXmlReader {
         throw new ServiceXmlDeserializationException("Unexpected end of XML document.");
       } else {
         XMLEvent event = xmlReader.nextEvent();
+
+        if (event == null) {
+          throw new IllegalStateException("Incorrect response. Event must exist");
+        }
+
         if (event.getEventType() == XMLStreamConstants.CHARACTERS) {
           Characters characters = (Characters) event;
           if (!keepWhiteSpace) {
