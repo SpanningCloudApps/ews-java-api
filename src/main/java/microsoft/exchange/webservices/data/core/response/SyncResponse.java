@@ -123,44 +123,44 @@ public abstract class SyncResponse<TServiceObject extends ServiceObject,
 
           if (change != null) {
             reader.read();
-            reader.ensureCurrentNodeIsStartElement();
-
-            if (change.getChangeType().equals(ChangeType.Delete)
+            if (reader.isStartElement()) {
+              if (change.getChangeType().equals(ChangeType.Delete)
                 || change.getChangeType().equals(ChangeType.ReadFlagChange)) {
-              change.setId(change.createId());
-              change.getId().loadFromXml(reader,
+                change.setId(change.createId());
+                change.getId().loadFromXml(reader,
                   change.getId().getXmlElementName());
 
-              if (change.getChangeType().equals(ChangeType.ReadFlagChange)) {
-                reader.read();
-                reader.ensureCurrentNodeIsStartElement();
-                ItemChange itemChange = null;
-                if (change instanceof ItemChange) {
-                  itemChange = (ItemChange) change;
-                }
-                EwsUtilities
+                if (change.getChangeType().equals(ChangeType.ReadFlagChange)) {
+                  reader.read();
+                  reader.ensureCurrentNodeIsStartElement();
+                  ItemChange itemChange = null;
+                  if (change instanceof ItemChange) {
+                    itemChange = (ItemChange) change;
+                  }
+                  EwsUtilities
                     .ewsAssert(itemChange != null, "SyncResponse." + "ReadElementsFromXml",
-                               "ReadFlagChange is only " + "valid on ItemChange");
+                      "ReadFlagChange is only " + "valid on ItemChange");
 
-                itemChange.setIsRead(reader.readElementValue(
+                  itemChange.setIsRead(reader.readElementValue(
                     Boolean.class, XmlNamespace.Types,
                     XmlElementNames.IsRead));
-              }
-            } else {
+                }
+              } else {
 
-              change.setServiceObject(EwsUtilities
+                change.setServiceObject(EwsUtilities
                   .createEwsObjectFromXmlElementName(null,
-                      reader.getService(), reader.getLocalName()));
+                    reader.getService(), reader.getLocalName()));
 
-              change.getServiceObject().loadFromXml(reader,
+                change.getServiceObject().loadFromXml(reader,
                   true, /* clearPropertyBag */
                   this.propertySet, this.getSummaryPropertiesOnly());
-            }
+              }
 
-            reader.readEndElementIfNecessary(XmlNamespace.Types,
+              reader.readEndElementIfNecessary(XmlNamespace.Types,
                 change.getChangeType().toString());
 
-            this.changes.add(change);
+              this.changes.add(change);
+            }
           }
         }
       } while (!reader.isEndElement(XmlNamespace.Messages,
